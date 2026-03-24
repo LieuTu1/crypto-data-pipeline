@@ -1,32 +1,27 @@
-# Chặn các thư mục dữ liệu (quan trọng nhất)
-data/
-news/
-klines/
-fear_and_greed/
+# Chặn các thư mục database nặng
+mysql-data/
+postgres-db/
+mongo-data/
+
+# Chặn thư mục chứa model AI (Thủ phạm gây lỗi 100MB)
+**/models/
+**/blobs/
+
+# Chặn các file rác và logs
+**/__pycache__/
+*.log
 logs/
 
-# Chặn dữ liệu Database & Docker
-mysql-data/
-mongo-data/
-postgres-db/
-
-# Chặn thư mục chứa model AI
-models/
-backup_refactor/models/
-
-# Chặn các file rác hệ thống và Python
-**/__pycache__/
-*.pyc
-*.log
+# Chặn file dữ liệu (csv, json...) nhưng vẫn giữ code .py
+*.csv
 *.json
 *.jsonl
-*.csv
-*.txt
-*.html
-.env
-venv/
-.DS_Store
+*.bin
+*.safetensors
+*.zip
 
-# Chỉ giữ lại file cấu hình quan trọng (nếu cần thiết)
+# GIỮ LẠI FILE CODE
+!*.py
+!*.yaml
+!Dockerfile
 !requirements.txt
-!README.md

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lộ trình Crypto cơ bản</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05070f;
+      --panel: #0c1220;
+      --panel-2: #0f1a2e;
+      --text: #e7edf7;
+      --muted: #9fb2cc;
+      --accent: #7cf4ff;
+      --accent-2: #9b8cff;
+      --accent-3: #3ef3b9;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(123, 244, 255, 0.18), transparent 32%),
+        radial-gradient(circle at 80% 18%, rgba(155, 140, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 24% 78%, rgba(62, 243, 185, 0.16), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      padding: 32px 18px 48px;
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: grid;
+      gap: 16px;
+      padding: 24px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(12, 18, 32, 0.92), rgba(11, 24, 46, 0.94));
+      border: 1px solid rgba(124, 244, 255, 0.22);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(155, 140, 255, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(124, 244, 255, 0.16), transparent 35%),
+                  radial-gradient(circle at 70% 70%, rgba(155, 140, 255, 0.14), transparent 30%);
+      filter: blur(36px);
+      z-index: 0;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 14px;
+      background: rgba(124, 244, 255, 0.08);
+      border: 1px solid rgba(124, 244, 255, 0.35);
+      color: #c8f8ff;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      width: fit-content;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: 0.4px;
+    }
+
+    .lede {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(155, 140, 255, 0.4);
+      background: linear-gradient(135deg, rgba(124, 244, 255, 0.16), rgba(155, 140, 255, 0.18));
+      color: var(--text);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      transition: transform 120ms ease, filter 140ms ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .btn:active { transform: translateY(0); }
+
+    section {
+      margin-top: 26px;
+      background: var(--panel);
+      border: 1px solid rgba(124, 244, 255, 0.12);
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .tag {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(155, 140, 255, 0.12);
+      color: #cfc6ff;
+      border: 1px solid rgba(155, 140, 255, 0.2);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    @media (min-width: 720px) {
+      .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .card {
+      background: var(--panel-2);
+      border: 1px solid rgba(124, 244, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgba(124, 244, 255, 0.04), rgba(155, 140, 255, 0.04));
+      pointer-events: none;
+    }
+
+    .step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(124, 244, 255, 0.12);
+      border: 1px solid rgba(124, 244, 255, 0.3);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: 0.2px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(62, 243, 185, 0.12);
+      border: 1px solid rgba(62, 243, 185, 0.32);
+      color: #b6ffe2;
+      font-weight: 600;
+      font-size: 13px;
+      width: fit-content;
+    }
+
+    .list-tight {
+      display: grid;
+      gap: 8px;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .list-tight li {
+      display: flex;
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px rgba(124, 244, 255, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="glow"></div>
+      <div class="header-content">
+        <div class="eyebrow">Crypto 101 · Lộ trình nhanh</div>
+        <h1>Bắt đầu với tiền mã hóa mà không lạc lối</h1>
+        <p class="lede">Một tờ hướng dẫn ngắn giúp bạn hiểu nguyên tắc, thiết lập ví, mua token đầu tiên và quản lý rủi ro. Tập trung vào an toàn, kiểm soát và quyết định dựa trên dữ liệu.</p>
+        <div class="cta-row">
+          <a class="btn" href="#steps">Xem 5 bước khởi động</a>
+          <a class="btn" href="#checklist">Checklist 10 phút</a>
+        </div>
+      </div>
+    </header>
+
+    <section id="steps">
+      <div class="section-title">
+        <span>Lộ trình 5 bước</span>
+        <span class="tag">Từ 0 đến giao dịch đầu tiên</span>
+      </div>
+      <div class="grid cols-3">
+        <div class="card">
+          <span class="step">1</span>
+          <h3>Hiểu nguyên tắc</h3>
+          <p>Blockchain ghi sổ phân tán, giao dịch không thể sửa. Token có thể là tiền (BTC), phí mạng (ETH), hay tài sản ứng dụng (utility token).</p>
+        </div>
+        <div class="card">
+          <span class="step">2</span>
+          <h3>Chọn ví</h3>
+          <p>Dùng ví tự quản (non-custodial) như MetaMask, Rabby. Sao lưu seed phrase trên giấy, tách khỏi thiết bị. Không chụp ảnh, không lưu cloud.</p>
+        </div>
+        <div class="card">
+          <span class="step">3</span>
+          <h3>Nạp tiền</h3>
+          <p>Mua USDT/USDC qua sàn uy tín (Binance, Coinbase). Rút về ví trên mạng đúng chain (ERC20 hoặc mạng mà dApp yêu cầu).</p>
+        </div>
+        <div class="card">
+          <span class="step">4</span>
+          <h3>Giao dịch thử</h3>
+          <p>Kết nối ví, kiểm tra lại URL, phí gas và số tiền. Bắt đầu với số nhỏ, đọc lại thông tin chữ ký trước khi xác nhận.</p>
+        </div>
+        <div class="card">
+          <span class="step">5</span>
+          <h3>Quản trị rủi ro</h3>
+          <p>Chỉ đầu tư số có thể mất. Đa dạng ví (ví nóng/ví lạnh), đặt ngưỡng cắt lỗ, theo dõi danh mục mỗi tuần.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <div class="section-title">
+        <span>Checklist 10 phút</span>
+        <span class="tag">An toàn & vận hành</span>
+      </div>
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="pill">Bảo mật</div>
+          <ul class="list-tight">
+            <li><span class="dot"></span><span>Seed phrase viết tay, cất hai nơi tách biệt.</span></li>
+            <li><span class="dot"></span><span>Bật 2FA dạng OTP/HW key cho tài khoản sàn.</span></li>
+            <li><span class="dot"></span><span>Kiểm tra chữ ký: dApp, số tiền, chain, phí.</span></li>
+            <li><span class="dot"></span><span>Không dán seed/ private key vào bất kỳ form hoặc bot.</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill">Thao tác</div>
+          <ul class="list-tight">
+            <li><span class="dot"></span><span>Đọc lại tên token, hợp đồng, mạng trước khi swap.</span></li>
+            <li><span class="dot"></span><span>Lưu địa chỉ ví thường dùng, tránh copy sai.</span></li>
+            <li><span class="dot"></span><span>Tắt quyền cấp phép (token approvals) định kỳ trên Etherscan/OKLink.</span></li>
+            <li><span class="dot"></span><span>Lưu lịch giao dịch để tính phí, thuế nếu cần.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="section-title">
+        <span>Công cụ gợi ý</span>
+        <span class="tag">Theo dõi & nghiên cứu</span>
+      </div>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>Giám sát ví</h3>
+          <p>Debank, Zerion, De.Fi để xem tài sản, token approvals, lịch sử giao dịch.</p>
+        </div>
+        <div class="card">
+          <h3>Phân tích on-chain</h3>
+          <p>Dune, DefiLlama, Arkham (thận trọng quyền riêng tư) để kiểm chứng dữ liệu.</p>
+        </div>
+        <div class="card">
+          <h3>Thông báo</h3>
+          <p>Bot cảnh báo giá/khối lượng, đặt ngưỡng chốt lời và cắt lỗ, tránh FOMO.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="notes">
+      <div class="section-title">
+        <span>Lưu ý pháp lý</span>
+        <span class="tag">Thông tin quan trọng</span>
+      </div>
+      <p style="color: var(--muted); margin: 0; line-height: 1.6;">
+        Đây không phải lời khuyên đầu tư. Thị trường biến động mạnh, có thể mất toàn bộ vốn. Kiểm tra quy định pháp lý tại nơi bạn sống, tuân thủ yêu cầu KYC/thuế, và chỉ dùng số tiền bạn sẵn sàng chấp nhận rủi ro.
+      </p>
+    </section>
+  </div>
+</body>
+</html>
