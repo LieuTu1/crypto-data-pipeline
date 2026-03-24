@@ -1,0 +1,32 @@
+# Chặn các thư mục dữ liệu (quan trọng nhất)
+data/
+news/
+klines/
+fear_and_greed/
+logs/
+
+# Chặn dữ liệu Database & Docker
+mysql-data/
+mongo-data/
+postgres-db/
+
+# Chặn thư mục chứa model AI
+models/
+backup_refactor/models/
+
+# Chặn các file rác hệ thống và Python
+**/__pycache__/
+*.pyc
+*.log
+*.json
+*.jsonl
+*.csv
+*.txt
+*.html
+.env
+venv/
+.DS_Store
+
+# Chỉ giữ lại file cấu hình quan trọng (nếu cần thiết)
+!requirements.txt
+!README.md
